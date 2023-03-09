@@ -10,42 +10,35 @@ FROM employees;
 SELECT *
 FROM employees
 WHERE first_name IN ('Irena', 'Vidya', 'Maya')
-ORDER BY first_name ASC;
+ORDER BY first_name;
 
 -- 3. What was the first and last name in the first row of the results? What was the first and last name of the last person in the table? Irena Acton, Vidya Zwqizig
 SELECT *
 FROM employees
 WHERE first_name IN ('Irena', 'Vidya', 'Maya')
-ORDER BY 
-first_name ASC, 
-last_name ASC;
+ORDER BY first_name, last_name;
 
 -- 4. What was the first and last name in the first row of the results? What was the first and last name of the last person in the table? Irena Acton, Maya Zyda
 SELECT *
 FROM employees
 WHERE first_name IN ('Irena', 'Vidya', 'Maya')
-ORDER BY 
-last_name ASC, 
-first_name ASC;
+ORDER BY last_name, first_name;
 
 -- 5. Enter a comment with the number of employees returned, the first employee number and their first and last name, and the last employee number with their first and last name. 10021 Ramzi Erde, Tadahiro Erde
 SELECT *
 FROM employees
-WHERE last_name LIKE 'E%'
-AND last_name LIKE '%E'
+WHERE last_name LIKE 'E%E'
 ORDER BY emp_no;
 
--- 6. Enter a comment with the number of employees returned, the name of the newest employee, and the name of the oldest employee. Sergi Erde, Teiji Eldridge 
+-- 6. Enter a comment with the number of employees returned, the name of the newest employee, and the name of the oldest employee.  Teiji Eldridge, Sergi Erde
 SELECT *
 FROM employees
-WHERE last_name LIKE 'E%'
-AND last_name LIKE '%E'
-ORDER BY hire_date;
+WHERE last_name LIKE 'e%e'
+ORDER BY hire_date DESC;
 
 -- 7. Enter a comment with the number of employees returned, the name of the oldest employee who was hired last, and the name of the youngest employee who was hired first. Khun Bernini, Douadi Pettis
 SELECT *
 FROM employees
-WHERE hire_date BETWEEN '1990-01-01' AND '1999-12-31'
+WHERE hire_date LIKE '199%'
 AND birth_date LIKE '%12-25'
-ORDER BY birth_date ASC,
-hire_date DESC;
+ORDER BY birth_date ASC, hire_date DESC;
