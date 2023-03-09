@@ -22,7 +22,7 @@ What is the primary key for the albums table? id
 
 What does the column named 'name' represent? name of album
 
-What do you think the sales column represents? albums sold
+What do you think the sales column represents? millions of copy sold
 
 */
 
