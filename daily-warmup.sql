@@ -9,5 +9,4 @@ SELECT *
 FROM orders
 WHERE item_name IN ('chicken bowl', 'veggie bowl')
 	AND quantity > 1;
-
 -- 
