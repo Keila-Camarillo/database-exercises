@@ -1,6 +1,7 @@
 -- Find all the current employees with the same hire date as employee 101010 using a subquery.
 USE employees;
 SELECT * FROM dept_emp;
+SELECT * FROM employees;
 
 SELECT hire_date
 FROM employees
@@ -18,23 +19,33 @@ SELECT * FROM titles;
 SELECT * FROM employees;
 SELECT * FROM dept_emp;
 
-SELECT t.title, e.first_name, e.last_name
+SELECT t.title
 FROM titles as t
 JOIN employees as e ON t.emp_no = e.emp_no 
 JOIN dept_emp as dm ON dm.emp_no = e.emp_no
 WHERE t.emp_no IN (SELECT emp_no FROM employees WHERE first_name = 'Aamod') AND (dm.to_date > CURDATE())
+GROUP BY t.title
 ORDER BY t.title;
 
--- How many people in the employees table are no longer working for the company? Give the answer in a comment in your code. 85108
+-- How many people in the employees table are no longer working for the company? Give the answer in a comment in your code. 59900
 SELECT * FROM employees;
 SELECT * FROM dept_emp;
 
-SELECT COUNT(emp_no)
+SELECT COUNT(*)
 FROM employees
 WHERE emp_no IN (SELECT emp_no FROM dept_emp WHERE to_date < CURDATE())
 ;
 
 SELECT emp_no FROM dept_emp WHERE to_date < CURDATE();
+-- review
+
+SELECT * FROM dept_emp WHERE to_date < CURDATE();
+
+SELECT COUNT(*) 
+FROM employees e
+WHERE e.emp_no NOT IN (SELECT emp_no FROM dept_emp WHERE to_date > CURDATE());
+
+
 -- Find all the current department managers that are female. List their names in a comment in your code.Isamu Legleitner, Karsten Sigstam, Leon DasSarma, Hilary Kambil
 SELECT * FROM dept_manager;
 SELECT * FROM employees;
@@ -45,6 +56,24 @@ JOIN dept_manager as dm ON e.emp_no = dm.emp_no
 WHERE e.emp_no IN (SELECT emp_no FROM employees WHERE gender = 'F')
 	AND (dm.to_date > CURDATE())
 ;
+
+-- 
+SELECT * FROM dept_manager;
+SELECT * FROM employees;
+
+SELECT * 
+FROM dept_manager AS d
+JOIN employees AS e on e.emp_no = d.emp_no
+WHERE d.to_date > CURDATE() AND e.gender = 'F'
+;
+
+SELECT CONCAT(first_name, ' ', last_name)
+FROM employees AS e
+WHERE e.emp_no IN (SELECT d.emp_no
+FROM dept_manager AS d
+JOIN employees AS e on e.emp_no = d.emp_no
+WHERE d.to_date > CURDATE() AND e.gender = 'F');
+
 
 -- Find all the employees who currently have a higher salary than the companies overall, historical average salary.
 SELECT * FROM salaries;
@@ -61,8 +90,25 @@ JOIN dept_emp AS de ON e.emp_no = de.emp_no
 WHERE de.to_date > CURDATE() AND (s.to_date > CURDATE()) 
 HAVING s.salary > avg_salary;
 
+-- Checking count
+SELECT count(*) FROM (SELECT e.first_name
+	, e.last_name
+    , s.salary
+    , (SELECT ROUND(AVG(salary), 2) FROM salaries) AS avg_salary
+FROM salaries AS s
+JOIN employees AS e ON e.emp_no = s.emp_no
+JOIN dept_emp AS de ON e.emp_no = de.emp_no
+WHERE de.to_date > CURDATE() AND (s.to_date > CURDATE()) 
+HAVING s.salary > avg_salary) AS test;
 
 SELECT AVG(salary) FROM salaries;
+
+-- 
+SELECT AVG(salary) FROM salaries;
+SELECT * FROM employees AS e
+JOIN salaries AS s on s.emp_no = e.emp_no
+WHERE s.to_date > CURDATE() 
+	AND s.salary > (SELECT AVG(salary) FROM salaries);
 
 -- How many current salaries are within 1 standard deviation of the current highest salary? (Hint: you can use a built in function to calculate the standard deviation.) 78, 240124
 -- What percentage of all salaries is this?
@@ -87,7 +133,7 @@ FROM salaries
 WHERE to_date > CURDATE();
 
 SELECT 
-	COUNT(salary) / (SELECT COUNT(salary)FROM salaries WHERE to_date > CURDATE()) * 100 AS percent_of_salary_within_one_std
+	COUNT(salary) / (SELECT COUNT(salary) FROM salaries WHERE to_date > CURDATE()) * 100 AS percent_of_salary_within_one_std
 FROM salaries
 WHERE salary > (
     (SELECT MAX(salary) FROM salaries) - (SELECT ROUND(STDDEV(salary), 0) FROM salaries))
@@ -105,7 +151,31 @@ FROM salaries;
 SELECT STD((SELECT s.salary FROM salaries AS s JOIN employees AS e ON e.emp_no = s.emp_no JOIN dept_emp AS de ON e.emp_no = de.emp_no WHERE de.to_date > CURDATE() AND (s.to_date > CURDATE())))
 ;
 
+-- 
+SELECT MAX(salary) FROM salaries WHERE to_date > CURDATE();
 
+SELECT stddev(salary) FROM salaries 
+WHERE to_date > CURDATE();
+
+SELECT MAX(salary) - round(stddev(salary), 2) 
+FROM salaries where to_date > curdate();
+
+SELECT COUNT(*) 
+FROM salaries
+WHERE salary > (SELECT MAX(salary) - round(stddev(salary), 2) 
+FROM salaries where to_date > curdate()); 
+
+SELECT ( (SELECT COUNT(*) 
+FROM salaries
+WHERE salary > (SELECT MAX(salary) - round(stddev(salary), 2) 
+FROM salaries where to_date > curdate())
+)/
+(SELECT COUNT(*) 
+FROM salaries
+WHERE salary > (SELECT MAX(salary) - round(stddev(salary), 2) 
+FROM salaries where to_date > curdate());) 
+
+)
 
 -- Find all the department names that currently have female managers.
 SELECT * FROM employees;
