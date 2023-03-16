@@ -25,7 +25,9 @@ JOIN
 	FROM dept_emp
 	GROUP BY emp_no
 	) AS current_hire_date
-USING(emp_no);
+USING(emp_no)
+JOIN dept_emp
+ON dept_emp.to_date = current_hire_date ;
 
 SELECT * FROM dept_emp limit 11;
 
