@@ -55,6 +55,7 @@ SELECT last_name,
 FROM employees
 ;
 /*3. How many employees (current or previous) were born in each decade?*/
+use employees;
 SELECT * FROM employees;
 SELECT 
 	COUNT(CASE WHEN date_format(birth_date, '%y') BETWEEN 50 AND 59 THEN 1 END ) AS '50s',

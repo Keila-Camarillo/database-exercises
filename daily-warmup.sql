@@ -72,3 +72,26 @@ from dept_manager;
 
 select avg(salary) + std(salary)
 from salaries;
+
+-- 03/28/2023
+-- Using the telco_churn DB, give me all the customers who pay over the company monthly average
+use telco_churn;
+show tables;
+select * from contract_types;
+select * from customer_churn;
+select * from customer_details;
+select * from customer_payments;
+select * from customer_signups;
+select * from customer_subscriptions;
+select * from customers;
+select * from internet_service_types;
+select * from payment_types;
+
+select count(round(avg(monthly_charges), 2))
+from customers; -- 64.76
+
+select count(customer_id) 
+from customers
+where monthly_charges > (select avg(monthly_charges) from customers);
+
+
