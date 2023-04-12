@@ -95,3 +95,24 @@ from customers
 where monthly_charges > (select avg(monthly_charges) from customers);
 
 
+-- 04/11/2023
+-- Using the customer, address, city, and country table in the sakila db
+-- find all customers that live in Poland.
+-- Output two columns titled: full_name, email
+
+use sakila;
+show tables;
+select * from customer;
+select * from address;
+select * from country;
+
+select concat(c.first_name ," " , c.last_name) , c.email
+from customer as c
+join address  
+using (address_id)
+join city
+using (city_id)
+join country
+using (country_id)
+where country = "Poland";
+select * from salar;
